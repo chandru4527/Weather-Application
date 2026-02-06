@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.9.0/fonts/remixicon.css" rel="stylesheet" />
+  <title>Weather</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif
+    }
+
+    body {
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
+
+
+    .container {
+      width: 100%;
+      max-width: 330px;
+      min-height: 420px;
+      padding: 20px;
+      margin: 15px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      color: #fff;
+      background: url("https://wallpaperaccess.com/full/1345462.jpg") center / cover no-repeat;
+    }
+
+
+    .inputs {
+      width: 100%;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      padding: 4px 6px;
+      border-radius: 20px;
+      margin-bottom: 25px;
+
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(6px);
+    }
+
+    .inputs input {
+      flex: 1;
+      height: 100%;
+      border: none;
+      outline: none;
+
+      background: transparent;
+      color: #fff;
+
+      font-size: 14px;
+      padding: 0 10px;
+    }
+
+    .inputs input::placeholder {
+      color: #fff;
+    }
+
+    .inputs span {
+      width: 30px;
+      height: 30px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 40%;
+      cursor: pointer;
+      color: #fff;
+      font-size: 20px;
+
+      transition: 0.2s ease;
+    }
+
+    .inputs span:hover {
+      transform: scale(1.05);
+    }
+
+
+    /* city name */
+    .city-name {
+      margin-bottom: 10px;
+      padding-left: 10px;
+    }
+
+    /* weather */
+    .weather {
+      padding: 10px 35px;
+      text-align: end;
+      margin-bottom: 10px;
+    }
+
+    .weather h1 {
+      font-weight: 500;
+      font-size: 65px;
+    }
+
+    .container .weather-content {
+      margin-top: 20px;
+      padding-left: 10px;
+    }
+
+    .weather-content p {
+      margin-top: 5px;
+    }
+
+    #weather-icon {
+      font-size: 30px;
+      display: block;
+    }
+
+    @media (max-width: 400px) {
+  .weather h1 {
+    font-size: 52px;
+  }
+
+  .container {
+    padding: 16px;
+  }
+}
+
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- input box -->
+    <div class="inputs">
+      <input type="text" id="input" placeholder="search city">
+      <span id="search" onclick="search()"><i class="ri-search-line"></i></span>
+    </div>
+
+    <!-- city name -->
+    <div class="city-name">
+      <h3 id="city">City | <span id="country">country</span></h3>
+      <small><span id="day">day</span> | <span id="time">time</span></small>
+    </div>
+
+    <!-- weather -->
+    <div class="weather">
+      <i id="weather-icon" class="ri-cloud-line"></i>
+      <h1 id="temper">0°</h1>
+      <p id="weather">type</p>
+    </div>
+
+    <!-- weather content -->
+    <div class="weather-content">
+      <p><i class="ri-temp-cold-line"></i> Feels like :<span id="feel"> °C</span></p>
+      <p><i class="ri-drop-line"></i> Humidity :<span id="humidity"> 0%</span></p>
+      <p><i class="ri-windy-fill"></i> Wind : <span id="wind">0 km/h</span></p>
+    </div>
+  </div>
+
+
+  <script>
+    const search = () => {
+      const city = document.getElementById("input").value.trim();
+      const api = "ae65f3ef336a5aaf95e3cd928dce2015";
+      if (!city) {
+        alert("Enter city name")
+        return;
+      }
+
+      
+        axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${api}`).then((res) => {
+          // console.log(res.data)
+          const city_name = res.data.name;    // city_name
+          const ctry = res.data.sys.country;   // county name
+          const temp = Math.round(res.data.main.temp);  // temp
+          const weather = res.data.weather[0].main;     //weather
+          const feel = Math.round(res.data.main.feels_like);   // feel
+          const Humidity = res.data.main.humidity;   //humidity
+          const wind = res.data.wind.speed;    //wind
+
+          const icon = document.getElementById("weather-icon");
+          icon.className = "ri-";
+
+          switch (weather) {
+            case "Clear":
+              icon.classList.add("ri-sun-line");
+              break;
+            case "Clouds":
+              icon.classList.add("ri-cloud-line");
+              break;
+            case "Rain":
+              icon.classList.add("ri-rainy-line");
+              break;
+            case "Drizzle":
+              icon.classList.add("ri-drizzle-line");
+              break;
+            case "Thunderstorm":
+              icon.classList.add("ri-thunderstorms-line");
+              break;
+            case "Snow":
+              icon.classList.add("ri-snowy-line");
+              break;
+            case "Mist":
+            case "Haze":
+            case "Fog":
+              icon.classList.add("ri-foggy-line");
+              break;
+            default:
+              icon.classList.add("ri-cloud-line");
+          }
+
+          // values
+          document.getElementById("city").innerHTML = `${city_name} | <span id="country">${ctry}</span>`;
+          document.getElementById("temper").innerHTML = `${temp}°`;
+          document.getElementById("weather").innerText = weather;
+          document.getElementById("feel").innerText = ` ${feel} °C`;
+          document.getElementById("humidity").innerText = ` ${Humidity}%`;
+          document.getElementById("wind").innerText = `${Math.round(wind * 3.6)} km/h`;
+          updateDateTime()
+        }).catch((err) => {
+          alert(err.response?.data?.message || "City not found");
+          console.log(err)
+        })
+
+      
+
+    }
+
+    const updateDateTime = () => {
+      const now = new Date();
+
+      const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+      const date = now.getDate();
+      const month = months[now.getMonth()];
+      const day = days[now.getDay()];
+
+      let hours = now.getHours();
+      let minutes = now.getMinutes();
+      if (minutes < 10) minutes = "0" + minutes;
+
+      document.getElementById("day").innerText = `${date} ${month} ${day}`;
+      document.getElementById("time").innerText = `${hours}:${minutes}`;
+    };
+
+
+
+  </script>
+</body>
+
+</html>

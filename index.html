@@ -32,11 +32,25 @@
       padding: 20px;
       margin: 15px;
       border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      box-shadow: 10px 15px 25px rgba(0, 0, 0, 0.5);
+      color: green;
       color: #fff;
+      position: relative;
+      overflow: hidden;
       background: url("https://wallpaperaccess.com/full/1345462.jpg") center / cover no-repeat;
     }
 
+    .container::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.09);
+    }
+
+    .container>* {
+      position: relative;
+      z-index: 2;
+    }
 
     .inputs {
       width: 100%;
@@ -44,11 +58,9 @@
       display: flex;
       align-items: center;
       gap: 8px;
-
       padding: 4px 6px;
       border-radius: 20px;
       margin-bottom: 25px;
-
       background: rgba(255, 255, 255, 0.25);
       backdrop-filter: blur(6px);
     }
@@ -58,16 +70,15 @@
       height: 100%;
       border: none;
       outline: none;
-
       background: transparent;
-      color: #fff;
+      /* color: #fff; */
 
       font-size: 14px;
       padding: 0 10px;
     }
 
     .inputs input::placeholder {
-      color: #fff;
+      color: white;
     }
 
     .inputs span {
@@ -80,14 +91,13 @@
 
       border-radius: 40%;
       cursor: pointer;
-      color: #fff;
       font-size: 20px;
 
       transition: 0.2s ease;
     }
 
     .inputs span:hover {
-      transform: scale(1.05);
+      transform: scale(1.2);
     }
 
 
@@ -102,6 +112,7 @@
       padding: 10px 35px;
       text-align: end;
       margin-bottom: 10px;
+      backdrop-filter: blur(0px);
     }
 
     .weather h1 {
@@ -110,7 +121,7 @@
     }
 
     .container .weather-content {
-      margin-top: 20px;
+      margin-top: 40px;
       padding-left: 10px;
     }
 
@@ -124,15 +135,14 @@
     }
 
     @media (max-width: 400px) {
-  .weather h1 {
-    font-size: 52px;
-  }
+      .weather h1 {
+        font-size: 52px;
+      }
 
-  .container {
-    padding: 16px;
-  }
-}
-
+      .container {
+        padding: 16px;
+      }
+    }
   </style>
 </head>
 
@@ -177,63 +187,70 @@
         return;
       }
 
-      
-        axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${api}`).then((res) => {
-          // console.log(res.data)
-          const city_name = res.data.name;    // city_name
-          const ctry = res.data.sys.country;   // county name
-          const temp = Math.round(res.data.main.temp);  // temp
-          const weather = res.data.weather[0].main;     //weather
-          const feel = Math.round(res.data.main.feels_like);   // feel
-          const Humidity = res.data.main.humidity;   //humidity
-          const wind = res.data.wind.speed;    //wind
+      axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${api}`).then((res) => {
+        // console.log(res.data)
+        const city_name = res.data.name;    // city_name
+        const ctry = res.data.sys.country;   // county name
+        const temp = Math.round(res.data.main.temp);  // temp
+        const weather = res.data.weather[0].main;     //weather
+        const feel = Math.round(res.data.main.feels_like);   // feel
+        const Humidity = res.data.main.humidity;   //humidity
+        const wind = res.data.wind.speed;    //wind
 
-          const icon = document.getElementById("weather-icon");
-          icon.className = "ri-";
+        const icon = document.getElementById("weather-icon");
+        const container = document.querySelector(".container");
+        icon.className = "ri";
 
-          switch (weather) {
-            case "Clear":
-              icon.classList.add("ri-sun-line");
-              break;
-            case "Clouds":
-              icon.classList.add("ri-cloud-line");
-              break;
-            case "Rain":
-              icon.classList.add("ri-rainy-line");
-              break;
-            case "Drizzle":
-              icon.classList.add("ri-drizzle-line");
-              break;
-            case "Thunderstorm":
-              icon.classList.add("ri-thunderstorms-line");
-              break;
-            case "Snow":
-              icon.classList.add("ri-snowy-line");
-              break;
-            case "Mist":
-            case "Haze":
-            case "Fog":
-              icon.classList.add("ri-foggy-line");
-              break;
-            default:
-              icon.classList.add("ri-cloud-line");
-          }
+        switch (weather) {
+          case "Clear":
+            icon.classList.add("ri-sun-line");
+            container.style.background = 'url("https://img.freepik.com/premium-photo/solitary-oak-tree-lush-green-field-blue-sky_1225214-2381.jpg") center / cover no-repeat';
+            container.style.color = "#111"; 
+            break;
+          case "Clouds":
+            icon.classList.add("ri-cloud-line");
+            container.style.background = 'url("https://cdn.pixabay.com/photo/2024/03/29/06/47/nature-8662301_640.png") center / cover no-repeat';
+            break;
+          case "Rain":
+            icon.classList.add("ri-rainy-line");
+            container.style.background = 'url("https://img.freepik.com/premium-photo/serene-rainfall-through-lush-green-leaves-natures-tranquility_1225171-2410.jpg") center / cover no-repeat';
+            break;
+          case "Drizzle":
+            icon.classList.add("ri-drizzle-line");
+            container.style.background = 'url("https://tse4.mm.bing.net/th/id/OIP.pl2leJKUSLue2wCuP_EjDAHaJl?rs=1&pid=ImgDetMain&o=7&rm=3") center / cover no-repeat';
+            break;
+          case "Thunderstorm":
+            icon.classList.add("ri-thunderstorms-line");
+            container.style.background = 'url("https://img.freepik.com/premium-photo/lightnings-thunderstorms-discharge-isolated-3d_1281273-6732.jpg") center / cover no-repeat';
+            break;
+          case "Snow":
+            icon.classList.add("ri-snowy-line");
+            container.style.background = 'url("https://thumbs.dreamstime.com/b/winter-landscape-illustration-artificial-intelligence-artwork-generated-winter-landscape-illustration-artificial-intelligence-273851277.jpg") center / cover no-repeat';
+            container.style.color = "#111"; 
+            break;
+          case "Mist":
+          case "Haze":
+          case "Fog":
+            icon.classList.add("ri-foggy-line");
+            container.style.background = 'url("https://i.pinimg.com/736x/f3/83/9a/f3839ac355a8d1955cdcadac4bdb9815.jpg") center / cover no-repeat';
+            break;
+          default:
+            icon.classList.add("ri-cloud-line");
+            container.style.background = 'url("https://wallpaperaccess.com/full/1345462.jpg") center / cover no-repeat';
+        }
 
-          // values
-          document.getElementById("city").innerHTML = `${city_name} | <span id="country">${ctry}</span>`;
-          document.getElementById("temper").innerHTML = `${temp}°`;
-          document.getElementById("weather").innerText = weather;
-          document.getElementById("feel").innerText = ` ${feel} °C`;
-          document.getElementById("humidity").innerText = ` ${Humidity}%`;
-          document.getElementById("wind").innerText = `${Math.round(wind * 3.6)} km/h`;
-          updateDateTime()
-        }).catch((err) => {
-          alert(err.response?.data?.message || "City not found");
-          console.log(err)
-        })
-
-      
-
+        // values
+        document.getElementById("city").innerHTML = `${city_name} | <span id="country">${ctry}</span>`;
+        document.getElementById("temper").innerHTML = `${temp}°`;
+        document.getElementById("weather").innerText = weather;
+        document.getElementById("feel").innerText = ` ${feel} °C`;
+        document.getElementById("humidity").innerText = ` ${Humidity}%`;
+        document.getElementById("wind").innerText = `${Math.round(wind * 3.6)} km/h`;
+        updateDateTime()
+      }).catch((err) => {
+        alert(err.response?.data?.message || "City not found");
+        console.log(err)
+      })
     }
 
     const updateDateTime = () => {
@@ -254,9 +271,6 @@
       document.getElementById("day").innerText = `${date} ${month} ${day}`;
       document.getElementById("time").innerText = `${hours}:${minutes}`;
     };
-
-
-
   </script>
 </body>
 
